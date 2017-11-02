@@ -1,0 +1,47 @@
+1.  It looks like stdint.h is a header file, which is a file
+that contains c function declarations. Stdint.h is one that defines 
+the size of different integer types and corresponding macros.
+Stdint in particular is part of the standard C library.
+
+2.  It looks like integers are loosely defined in C, and there can be
+multiple types of integers. The already available basic 
+integer types were deemed insufficient, because their actual sizes are 
+implementation defined and may vary across different systems. 
+The new types are especially useful in embedded environments where 
+hardware usually supports only several types 
+and that support varies between different environments. 
+3. A Byte is set of binary data, usually consisting of 2^3 = 8 bits.
+A DWORD is a 32-bit unsigned integer, so it has 4 bytes.
+A LONG is a 32-bit signed integer, so it has 4 bytes.
+A WORD is a 16-bit unsigned integer, so it as 2 bytes.
+4.  The first two bytes of a bitmap file is the bfType, which must be BM 
+(a magic number or file signature representing btimap type files). The bfType
+is stored as a type WORD (which is an int).
+5.  'bfSize' is the size, in bytes, of the bitmap file, inclusize of the header files. In 
+In contrast, the bisize is the size of just the bitmapinfoheader file.
+6.  biHeight Specifies the height of the bitmap, in pixels.
+For uncompressed RGB bitmaps, if biHeight is positive, the bitmap is a bottom-up
+DIB with the origin at the lower left corner. If biHeight is negative,
+the bitmap is a top-down DIB with the origin at the upper left corner.
+7.  The biBitCount specifies the number of bits per pixel (bpp).
+8.  These 2 lines refer to 2 input arguments from command line, argv[1] and arg[2].
+Presumably if the file isn't provided as an argument, or if the file can't be opened
+successfully, the functions would return NULL.
+9.  In the context of our usage:
+"fread(&bf, sizeof(BITMAPFILEHEADER), 1, inptr);"
+the fread command is called with the entire size of bitmapfileheader being 
+read per "chunk" such that only 1 chunk is required to read the entire contents
+of bitmapfileheader.
+10. If bi.biWidth is 3, sizeof(RGBTRIPLE) is 3 bytes, so:
+int padding =  (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4
+= (4 - (3 * 3) % 4) % 4
+= (4 - 9 % 4) % 4
+= (4 - 1) % 4
+= 3
+Therefore, each line will have padding of 3 bytes.
+11. Fseek allows us to change the location of the file pointer
+(in contrast, normally, when reading in from a file, the pointer continues in
+one direction, from the start of the file to the end).
+12. SEEK_CUR is the third argument supplied to the fseek call, and is used for
+the 'whence' parameter. It specifies that the offset created by Fseek will
+be relative to the current position in the file. 
